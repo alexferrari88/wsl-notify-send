@@ -38,12 +38,12 @@ func (m *MockBeeper) SetAppName(name string) {
 func setupMockBeeper(t *testing.T) *MockBeeper {
 	mockBeeper := new(MockBeeper)
 	SetBeeper(mockBeeper)
-	
+
 	// Reset to default beeper after test
 	t.Cleanup(func() {
 		SetBeeper(NewDefaultBeeper())
 	})
-	
+
 	return mockBeeper
 }
 
@@ -241,13 +241,13 @@ func TestBeep(t *testing.T) {
 
 func TestProcessIcon(t *testing.T) {
 	tempDir := t.TempDir()
-	
+
 	// Create test file
 	testFile := filepath.Join(tempDir, "test.png")
 	testContent := []byte("test icon content")
 	err := os.WriteFile(testFile, testContent, 0644)
 	require.NoError(t, err)
-	
+
 	// Non-existent file
 	nonExistentFile := filepath.Join(tempDir, "nonexistent.png")
 
@@ -293,7 +293,7 @@ func TestProcessIcon(t *testing.T) {
 				assert.Contains(t, err.Error(), tt.errorMsg)
 			} else {
 				assert.NoError(t, err)
-				
+
 				if tt.expectedType == "string" {
 					assert.IsType(t, "", result)
 				} else if tt.expectedType == "[]byte" {
@@ -309,33 +309,33 @@ func TestProcessIcon(t *testing.T) {
 
 func TestNotifyWithFileIcon(t *testing.T) {
 	tempDir := t.TempDir()
-	
+
 	// Create test icon file
 	iconFile := filepath.Join(tempDir, "test.png")
 	iconContent := []byte("test icon content")
 	err := os.WriteFile(iconFile, iconContent, 0644)
 	require.NoError(t, err)
-	
+
 	mockBeeper := setupMockBeeper(t)
 	mockBeeper.On("Notify", "Test", "Message", iconContent).Return(nil).Once()
-	
+
 	err = Notify("Test", "Message", iconFile, "")
 	assert.NoError(t, err)
-	
+
 	mockBeeper.AssertExpectations(t)
 }
 
 func TestNotifyWithInvalidIcon(t *testing.T) {
 	tempDir := t.TempDir()
 	nonExistentFile := filepath.Join(tempDir, "nonexistent.png")
-	
+
 	mockBeeper := setupMockBeeper(t)
 	// Mock should not be called since icon processing fails
-	
+
 	err := Notify("Test", "Message", nonExistentFile, "")
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), "failed to process icon")
-	
+
 	mockBeeper.AssertExpectations(t)
 }
 
@@ -371,12 +371,12 @@ func TestIsValidIconFormat(t *testing.T) {
 
 func TestSetBeeper(t *testing.T) {
 	originalBeeper := defaultBeeper
-	
+
 	mockBeeper := new(MockBeeper)
 	SetBeeper(mockBeeper)
-	
+
 	assert.Equal(t, mockBeeper, defaultBeeper)
-	
+
 	// Reset
 	SetBeeper(originalBeeper)
 	assert.Equal(t, originalBeeper, defaultBeeper)

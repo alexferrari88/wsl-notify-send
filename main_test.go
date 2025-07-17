@@ -211,15 +211,15 @@ func TestGetExitCodeSpecificErrorMessages(t *testing.T) {
 func TestMainErrorHandling(t *testing.T) {
 	// These tests verify the error handling logic without actually calling main()
 	// since main() calls os.Exit() which would terminate the test
-	
+
 	// Test that we properly categorize different error types
 	errorTypes := map[string]int{
-		"invalid configuration errors":   2,
-		"argument parsing errors":        2,
-		"notification system errors":     3,
-		"general errors":                1,
+		"invalid configuration errors": 2,
+		"argument parsing errors":      2,
+		"notification system errors":   3,
+		"general errors":               1,
 	}
-	
+
 	for errorType, expectedCode := range errorTypes {
 		t.Run(errorType, func(t *testing.T) {
 			var testErr error
@@ -233,7 +233,7 @@ func TestMainErrorHandling(t *testing.T) {
 			case "general errors":
 				testErr = errors.New("some general error")
 			}
-			
+
 			code := getExitCode(testErr)
 			assert.Equal(t, expectedCode, code)
 		})
@@ -251,7 +251,7 @@ func BenchmarkGetExitCode(b *testing.B) {
 		errors.New("too many arguments, expected: <title> [message]"),
 		errors.New("general error"),
 	}
-	
+
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		err := testErrors[i%len(testErrors)]
@@ -276,14 +276,14 @@ func TestStringContainsLogic(t *testing.T) {
 		{"", "test", false},
 		{"test", "", true}, // empty substring always matches
 	}
-	
+
 	for _, tt := range tests {
 		t.Run(tt.str+"_contains_"+tt.substr, func(t *testing.T) {
 			// This tests the actual logic used in getExitCode
-			result := len(tt.str) >= len(tt.substr) && 
-				(tt.str[:len(tt.substr)] == tt.substr || 
-				 (len(tt.str) > len(tt.substr) && tt.str[len(tt.str)-len(tt.substr):] == tt.substr) ||
-				 stringContains(tt.str, tt.substr))
+			result := len(tt.str) >= len(tt.substr) &&
+				(tt.str[:len(tt.substr)] == tt.substr ||
+					(len(tt.str) > len(tt.substr) && tt.str[len(tt.str)-len(tt.substr):] == tt.substr) ||
+					stringContains(tt.str, tt.substr))
 			assert.Equal(t, tt.expected, result)
 		})
 	}

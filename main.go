@@ -10,12 +10,12 @@ import (
 func main() {
 	if err := cmd.Execute(); err != nil {
 		exitCode := getExitCode(err)
-		
+
 		// Only print error if not in quiet mode
 		if !cmd.IsQuietMode() {
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 		}
-		
+
 		os.Exit(exitCode)
 	}
 }
@@ -24,9 +24,9 @@ func getExitCode(err error) int {
 	if err == nil {
 		return 0
 	}
-	
+
 	errStr := err.Error()
-	
+
 	// Check for different error types
 	switch {
 	case strings.Contains(errStr, "invalid configuration") || strings.Contains(errStr, "too many arguments") || strings.Contains(errStr, "requires at least"):

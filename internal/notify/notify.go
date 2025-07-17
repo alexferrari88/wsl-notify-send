@@ -22,18 +22,18 @@ func Notify(title, message, icon, appName string) error {
 	if appName != "" {
 		defaultBeeper.SetAppName(appName)
 	}
-	
+
 	// Process icon
 	iconData, err := processIcon(icon)
 	if err != nil {
 		return fmt.Errorf("failed to process icon: %w", err)
 	}
-	
+
 	// Send notification
 	if err := defaultBeeper.Notify(title, message, iconData); err != nil {
 		return fmt.Errorf("failed to send notification: %w", err)
 	}
-	
+
 	return nil
 }
 
@@ -43,18 +43,18 @@ func Alert(title, message, icon, appName string) error {
 	if appName != "" {
 		defaultBeeper.SetAppName(appName)
 	}
-	
+
 	// Process icon
 	iconData, err := processIcon(icon)
 	if err != nil {
 		return fmt.Errorf("failed to process icon: %w", err)
 	}
-	
+
 	// Send alert
 	if err := defaultBeeper.Alert(title, message, iconData); err != nil {
 		return fmt.Errorf("failed to send alert: %w", err)
 	}
-	
+
 	return nil
 }
 
@@ -63,7 +63,7 @@ func Beep(frequency float64, duration int) error {
 	if err := defaultBeeper.Beep(frequency, duration); err != nil {
 		return fmt.Errorf("failed to beep: %w", err)
 	}
-	
+
 	return nil
 }
 
@@ -90,7 +90,7 @@ func processIcon(icon string) (interface{}, error) {
 	if icon == "" {
 		return "", nil
 	}
-	
+
 	// Check if it's an absolute path
 	if filepath.IsAbs(icon) {
 		// Read file data
@@ -100,7 +100,7 @@ func processIcon(icon string) (interface{}, error) {
 		}
 		return data, nil
 	}
-	
+
 	// Check if it's a relative path with directory separators
 	if filepath.Dir(icon) != "." {
 		// Read file data
@@ -110,7 +110,7 @@ func processIcon(icon string) (interface{}, error) {
 		}
 		return data, nil
 	}
-	
+
 	// Check if it has a file extension and exists as a file
 	if filepath.Ext(icon) != "" {
 		if _, err := os.Stat(icon); err == nil {
@@ -122,7 +122,7 @@ func processIcon(icon string) (interface{}, error) {
 			return data, nil
 		}
 	}
-	
+
 	// Treat as stock icon name
 	return icon, nil
 }

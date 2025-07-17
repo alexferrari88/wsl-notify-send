@@ -31,22 +31,22 @@ Examples:
 		if cfg.Version {
 			return nil
 		}
-		
+
 		// If beep mode, no args required
 		if cfg.BeepMode {
 			return nil
 		}
-		
+
 		// Otherwise, need at least title
 		if len(args) < 1 {
 			return fmt.Errorf("requires at least a title argument")
 		}
-		
+
 		// Maximum 2 args (title and message)
 		if len(args) > 2 {
 			return fmt.Errorf("too many arguments, expected: <title> [message]")
 		}
-		
+
 		return nil
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
@@ -55,29 +55,29 @@ Examples:
 			cmd.Printf("wsl-notify-send version %s\n", Version)
 			return nil
 		}
-		
+
 		// Validate configuration
 		if err := cfg.Validate(); err != nil {
 			return fmt.Errorf("invalid configuration: %w", err)
 		}
-		
+
 		// Handle beep mode
 		if cfg.BeepMode {
 			return notify.Beep(cfg.Frequency, cfg.Duration)
 		}
-		
+
 		// Parse title and message
 		title := args[0]
 		message := ""
 		if len(args) > 1 {
 			message = args[1]
 		}
-		
+
 		// Send notification
 		if cfg.AlertMode {
 			return notify.Alert(title, message, cfg.Icon, cfg.AppName)
 		}
-		
+
 		return notify.Notify(title, message, cfg.Icon, cfg.AppName)
 	},
 }
@@ -94,20 +94,20 @@ func init() {
 	// Notification mode flags
 	rootCmd.Flags().BoolVarP(&cfg.AlertMode, "alert", "a", false, "Send alert notification with sound")
 	rootCmd.Flags().BoolVarP(&cfg.BeepMode, "beep", "b", false, "Just beep (no notification)")
-	
+
 	// Content flags
 	rootCmd.Flags().StringVarP(&cfg.Icon, "icon", "i", "", "Icon file path or stock icon name")
 	rootCmd.Flags().StringVar(&cfg.AppName, "app-name", "wsl-notify-send", "Application name")
-	
+
 	// Beep customization flags
 	rootCmd.Flags().Float64Var(&cfg.Frequency, "freq", 587.0, "Beep frequency in Hz")
 	rootCmd.Flags().IntVar(&cfg.Duration, "duration", 500, "Beep duration in milliseconds")
-	
+
 	// Utility flags
 	rootCmd.Flags().BoolVarP(&cfg.Quiet, "quiet", "q", false, "Suppress error output")
 	rootCmd.Flags().BoolVar(&cfg.Version, "version", false, "Show version information")
-	
+
 	// Mark beep-related flags as hidden when not in beep mode
-	rootCmd.Flags().MarkHidden("freq")
-	rootCmd.Flags().MarkHidden("duration")
+	_ = rootCmd.Flags().MarkHidden("freq")
+	_ = rootCmd.Flags().MarkHidden("duration")
 }

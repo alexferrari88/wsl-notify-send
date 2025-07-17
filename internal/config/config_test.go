@@ -117,17 +117,17 @@ func TestConfig_Validate(t *testing.T) {
 func TestConfig_ValidateIcon(t *testing.T) {
 	// Create temporary test files
 	tempDir := t.TempDir()
-	
+
 	// Create valid PNG file
 	validPngPath := filepath.Join(tempDir, "test.png")
 	err := os.WriteFile(validPngPath, []byte("dummy png content"), 0644)
 	require.NoError(t, err)
-	
+
 	// Create invalid format file
 	invalidFormatPath := filepath.Join(tempDir, "test.txt")
 	err = os.WriteFile(invalidFormatPath, []byte("text content"), 0644)
 	require.NoError(t, err)
-	
+
 	// Non-existent file path
 	nonExistentPath := filepath.Join(tempDir, "nonexistent.png")
 
@@ -173,7 +173,7 @@ func TestConfig_ValidateIcon(t *testing.T) {
 				Frequency: 587.0,
 				Duration:  500,
 			}
-			
+
 			err := config.Validate()
 			if tt.expectError {
 				assert.Error(t, err)
@@ -187,21 +187,21 @@ func TestConfig_ValidateIcon(t *testing.T) {
 
 func TestConfig_ValidateIconFormats(t *testing.T) {
 	tempDir := t.TempDir()
-	
+
 	supportedFormats := []string{".png", ".jpg", ".jpeg", ".ico", ".bmp"}
-	
+
 	for _, format := range supportedFormats {
 		t.Run("supported format "+format, func(t *testing.T) {
 			filePath := filepath.Join(tempDir, "test"+format)
 			err := os.WriteFile(filePath, []byte("dummy content"), 0644)
 			require.NoError(t, err)
-			
+
 			config := Config{
 				Icon:      filePath,
 				Frequency: 587.0,
 				Duration:  500,
 			}
-			
+
 			err = config.Validate()
 			assert.NoError(t, err)
 		})
@@ -210,18 +210,18 @@ func TestConfig_ValidateIconFormats(t *testing.T) {
 
 func TestConfig_ValidateIconFormatsCase(t *testing.T) {
 	tempDir := t.TempDir()
-	
+
 	// Test case sensitivity
 	upperCaseFile := filepath.Join(tempDir, "test.PNG")
 	err := os.WriteFile(upperCaseFile, []byte("dummy content"), 0644)
 	require.NoError(t, err)
-	
+
 	config := Config{
 		Icon:      upperCaseFile,
 		Frequency: 587.0,
 		Duration:  500,
 	}
-	
+
 	err = config.Validate()
 	// This should fail because the validation is case-sensitive
 	assert.Error(t, err)
@@ -247,7 +247,7 @@ func TestConfig_ValidateFrequencyBoundaries(t *testing.T) {
 				Frequency: tt.frequency,
 				Duration:  500,
 			}
-			
+
 			err := config.Validate()
 			if tt.valid {
 				assert.NoError(t, err)
@@ -278,7 +278,7 @@ func TestConfig_ValidateDurationBoundaries(t *testing.T) {
 				Frequency: 587.0,
 				Duration:  tt.duration,
 			}
-			
+
 			err := config.Validate()
 			if tt.valid {
 				assert.NoError(t, err)
