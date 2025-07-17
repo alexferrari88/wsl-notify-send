@@ -17,7 +17,7 @@ A cross-platform notification tool for Windows and WSL2 that provides a clean in
 
 ### Prerequisites
 
-- Go 1.19 or later
+- Go 1.24 or later
 
 ### Build from source
 
@@ -116,6 +116,83 @@ wsl-notify-send --icon "warning" "Alert" "Warning message"
 - **Windows 10/11**: Uses Windows Runtime COM API, falls back to PowerShell
 - **Windows 7**: Uses win32 API
 - **WSL2**: Forwards notifications to Windows host
+
+## Example Use Cases
+
+### Development Workflow Integration
+
+```bash
+# Notify when tests complete
+go test ./... && wsl-notify-send "Tests" "All tests passed ✅" || wsl-notify-send --alert "Tests" "Tests failed ❌"
+
+# Notify when build finishes
+make build && wsl-notify-send "Build" "Build successful" --icon success.png
+```
+
+### CI/CD Pipeline Notifications
+
+```bash
+# In your deployment script
+if deploy_to_production; then
+    wsl-notify-send --app-name "Deploy Bot" "Deployment" "Production deployment completed"
+else
+    wsl-notify-send --alert --app-name "Deploy Bot" "Deployment" "Production deployment failed"
+fi
+```
+
+### Claude Code Hooks Integration
+
+Automate notifications when working with [Claude Code](https://claude.ai/code) by adding hooks to your `.claude/settings.json`:
+
+```json
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command", 
+            "command": "wsl-notify-send --app-name \"Claude Code\" \"Command Complete\" \"Bash command executed successfully\""
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "wsl-notify-send --app-name \"Claude Code\" \"Session Complete\" \"Claude has finished responding\""
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+### System Monitoring
+
+```bash
+# Monitor disk space
+if [ $(df / | tail -1 | awk '{print $5}' | sed 's/%//') -gt 90 ]; then
+    wsl-notify-send --alert "System Alert" "Disk space is above 90%"
+fi
+
+# Long-running process completion
+long_running_command && wsl-notify-send "Process Complete" "Your long task has finished"
+```
+
+### WSL Development Workflow
+
+```bash
+# Notify Windows when WSL operations complete
+wsl-notify-send "WSL Task" "File synchronization completed" --icon sync.png
+
+# Alert when development server starts
+wsl-notify-send --app-name "Dev Server" "Server Ready" "Development server running on localhost:3000"
+```
 
 ## Error Handling
 
