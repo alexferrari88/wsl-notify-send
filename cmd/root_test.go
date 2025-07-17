@@ -208,7 +208,7 @@ func TestRootCommand_VersionFlag(t *testing.T) {
 	output, err := executeCommand([]string{"--version"})
 	
 	assert.NoError(t, err)
-	assert.Contains(t, output, "wsl-notify-send version 1.0.0")
+	assert.Contains(t, output, "wsl-notify-send version "+Version)
 	mockBeeper.AssertExpectations(t)
 }
 
@@ -397,7 +397,7 @@ func TestRootCommand_VersionModeWithTitle(t *testing.T) {
 	output, err := executeCommand([]string{"--version", "This", "Should", "Be", "Ignored"})
 	
 	assert.NoError(t, err)
-	assert.Contains(t, output, "wsl-notify-send version 1.0.0")
+	assert.Contains(t, output, "wsl-notify-send version "+Version)
 	mockBeeper.AssertExpectations(t)
 }
 

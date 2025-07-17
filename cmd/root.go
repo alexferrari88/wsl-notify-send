@@ -8,6 +8,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// Version can be set at build time with: go build -ldflags "-X wsl-notify-send/cmd.Version=x.y.z"
+var Version = "0.1.0"
+
 var cfg config.Config
 
 var rootCmd = &cobra.Command{
@@ -49,7 +52,7 @@ Examples:
 	RunE: func(cmd *cobra.Command, args []string) error {
 		// Handle version flag
 		if cfg.Version {
-			cmd.Println("wsl-notify-send version 1.0.0")
+			cmd.Printf("wsl-notify-send version %s\n", Version)
 			return nil
 		}
 		

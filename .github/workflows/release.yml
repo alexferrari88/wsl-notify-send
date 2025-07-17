@@ -28,7 +28,7 @@ jobs:
       run: go mod download
     
     - name: Build Windows executable
-      run: go build -o wsl-notify-send.exe .
+      run: go build -ldflags "-X wsl-notify-send/cmd.Version=${{ github.event.release.tag_name }}" -o wsl-notify-send.exe .
     
     - name: Upload Release Asset
       uses: actions/upload-release-asset@v1
